@@ -1,0 +1,25 @@
+Simulation Input
+Acceleration X = 2.5
+Acceleration Y = 1.8
+Acceleration Z = 2.0
+
+Gyroscope X = 1.2
+Gyroscope Y = 1.0
+Gyroscope Z = 0.8
+
+Heart Rate = 145
+Steps = 180
+Processing
+Input Sensor Data
+       ↓
+Data Validation
+       ↓
+Feature Scaling
+       ↓
+Random Forest Classifier
+       ↓
+Activity Prediction
+Output
+Predicted Activity
+        ↓
+      RUNNING

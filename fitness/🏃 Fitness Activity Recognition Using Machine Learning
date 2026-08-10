@@ -1,0 +1,24 @@
+Fitness Activity Recognition is an AI/ML-based system that identifies a person's physical activity using sensor data.
+
+The system takes features such as:
+
+Accelerometer X, Y, Z
+Gyroscope X, Y, Z
+Heart rate
+Step count
+Movement intensity
+
+and predicts the activity being performed.
+
+Example
+Sensor Data
+     ↓
+Data Preprocessing
+     ↓
+Feature Scaling
+     ↓
+Machine Learning Model
+     ↓
+Activity Prediction
+     ↓
+Walking / Running / Cycling / Swimming / Standing

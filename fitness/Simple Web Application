@@ -1,0 +1,58 @@
+import streamlit as st
+import numpy as np
+import joblib
+
+# Load model
+model = joblib.load("model/activity_model.pkl")
+scaler = joblib.load("model/scaler.pkl")
+
+st.set_page_config(
+    page_title="Fitness Activity Recognition",
+    page_icon="🏃"
+)
+
+st.title("🏃 Fitness Activity Recognition")
+st.write(
+    "Enter fitness sensor data to predict the current activity."
+)
+
+st.subheader("Sensor Information")
+
+ax = st.number_input("Acceleration X", value=1.0)
+ay = st.number_input("Acceleration Y", value=1.0)
+az = st.number_input("Acceleration Z", value=1.0)
+
+gx = st.number_input("Gyroscope X", value=0.5)
+gy = st.number_input("Gyroscope Y", value=0.5)
+gz = st.number_input("Gyroscope Z", value=0.5)
+
+heart_rate = st.number_input(
+    "Heart Rate",
+    min_value=40,
+    max_value=220,
+    value=80
+)
+
+steps = st.number_input(
+    "Steps",
+    min_value=0,
+    max_value=500,
+    value=50
+)
+
+if st.button("Predict Activity"):
+
+    data = np.array([[
+        ax, ay, az,
+        gx, gy, gz,
+        heart_rate,
+        steps
+    ]])
+
+    data = scaler.transform(data)
+
+    prediction = model.predict(data)
+
+    st.success(
+        f"Predicted Activity: {prediction[0]}"
+    )

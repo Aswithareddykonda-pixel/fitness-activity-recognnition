@@ -1,0 +1,151 @@
+import os
+import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+import joblib
+
+# Create folders
+os.makedirs("data", exist_ok=True)
+os.makedirs("model", exist_ok=True)
+
+np.random.seed(42)
+
+activities = [
+    "Walking",
+    "Running",
+    "Cycling",
+    "Swimming",
+    "Standing"
+]
+
+data = []
+
+# Generate sample sensor data
+for activity in activities:
+
+    for _ in range(300):
+
+        if activity == "Walking":
+            ax = np.random.normal(1.2, 0.3)
+            ay = np.random.normal(0.8, 0.2)
+            az = np.random.normal(1.0, 0.2)
+            gx = np.random.normal(0.5, 0.2)
+            gy = np.random.normal(0.4, 0.2)
+            gz = np.random.normal(0.3, 0.15)
+            heart_rate = np.random.normal(95, 8)
+            steps = np.random.normal(100, 15)
+
+        elif activity == "Running":
+            ax = np.random.normal(2.5, 0.5)
+            ay = np.random.normal(1.8, 0.4)
+            az = np.random.normal(2.0, 0.4)
+            gx = np.random.normal(1.2, 0.3)
+            gy = np.random.normal(1.0, 0.3)
+            gz = np.random.normal(0.8, 0.25)
+            heart_rate = np.random.normal(145, 12)
+            steps = np.random.normal(180, 20)
+
+        elif activity == "Cycling":
+            ax = np.random.normal(1.8, 0.3)
+            ay = np.random.normal(1.5, 0.3)
+            az = np.random.normal(1.6, 0.3)
+            gx = np.random.normal(2.0, 0.4)
+            gy = np.random.normal(1.8, 0.4)
+            gz = np.random.normal(1.5, 0.3)
+            heart_rate = np.random.normal(130, 10)
+            steps = np.random.normal(20, 5)
+
+        elif activity == "Swimming":
+            ax = np.random.normal(1.5, 0.4)
+            ay = np.random.normal(1.3, 0.3)
+            az = np.random.normal(1.4, 0.3)
+            gx = np.random.normal(2.5, 0.5)
+            gy = np.random.normal(2.2, 0.5)
+            gz = np.random.normal(2.0, 0.4)
+            heart_rate = np.random.normal(125, 10)
+            steps = np.random.normal(0, 2)
+
+        else:
+            ax = np.random.normal(0.1, 0.05)
+            ay = np.random.normal(0.1, 0.05)
+            az = np.random.normal(0.1, 0.05)
+            gx = np.random.normal(0.05, 0.02)
+            gy = np.random.normal(0.05, 0.02)
+            gz = np.random.normal(0.05, 0.02)
+            heart_rate = np.random.normal(70, 5)
+            steps = np.random.normal(2, 1)
+
+        data.append([
+            ax, ay, az,
+            gx, gy, gz,
+            heart_rate,
+            steps,
+            activity
+        ])
+
+columns = [
+    "acceleration_x",
+    "acceleration_y",
+    "acceleration_z",
+    "gyroscope_x",
+    "gyroscope_y",
+    "gyroscope_z",
+    "heart_rate",
+    "steps",
+    "activity"
+]
+
+df = pd.DataFrame(data, columns=columns)
+
+# Save dataset
+df.to_csv("data/fitness_activity_data.csv", index=False)
+
+print("Dataset created successfully!")
+
+# Features and target
+X = df.drop("activity", axis=1)
+y = df["activity"]
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# Feature scaling
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Random Forest model
+model = RandomForestClassifier(
+    n_estimators=150,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+# Prediction
+y_pred = model.predict(X_test)
+
+# Evaluation
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Save model and scaler
+joblib.dump(model, "model/activity_model.pkl")
+joblib.dump(scaler, "model/scaler.pkl")
+
+print("\nModel saved successfully!")

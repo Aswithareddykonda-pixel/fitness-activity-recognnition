@@ -1,0 +1,7 @@
+| Activity | Expected Prediction |
+| -------- | ------------------- |
+| Walking  | Walking             |
+| Running  | Running             |
+| Cycling  | Cycling             |
+| Swimming | Swimming            |
+| Standing | Standing            |
